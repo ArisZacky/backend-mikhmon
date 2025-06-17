@@ -24,7 +24,20 @@ class RouterController extends Controller
                 ], 401);
             }
 
-            $routers = $user->routers;
+            if($user->role === "reseller"){
+                // Get Id Child
+                $childIds = User::where('id_parent', $user->id)->pluck('id')->toArray();
+                // Gabung ke array ID reseller yang login dan id child(agent)
+                $userIds = array_merge([$user->id], $childIds);
+
+                // Get Router dengan ID ID itu
+                $routers = Router::whereIn('user_id', $userIds)->with('user')->get();
+
+            }elseif($user->role === "agent"){
+                // Agent lihat routernya dia saja
+                $routers = $user->routers()->with('user')->get();
+                // $routers = Router::where('user_id', $user->id)->with('user')->get();
+            }
 
             return response()->json([
                 'status' => 'success',

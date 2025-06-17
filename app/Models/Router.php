@@ -30,4 +30,10 @@ class Router extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Relasi ke paket voucher, 1 router bisa punya banyak paket
+    public function paketVouchers()
+    {
+        return $this->hasMany(PaketVoucher::class);
+    }
 }
