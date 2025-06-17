@@ -8,6 +8,7 @@ use App\Models\Agent;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -80,5 +81,49 @@ class AuthController extends Controller
             'agents' => $agents,
             'transaksi' => $transaksi
         ]);
+    }
+
+    public function addAgent(Request $request)
+    {
+        try{
+
+            $authUser = Auth::user();
+
+            $request->validate([
+                'user' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6',
+                'role' => 'required|string|max:255',
+            ]);
+
+            $newUser = User::create([
+                'user' => $request->user,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+                'id_parent' => $authUser->id,
+            ]);
+
+            return response()->json([
+                'message' => 'Agent registered successfully!',
+                'data' => [
+                    'id' => $newUser->id,
+                    'email' => $newUser->email,
+                    'role' => $newUser->role,
+                    'id_parent' => $newUser->id_parent,
+                ]
+            ], 201);
+        }catch(ValidationException $e){
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
     }
 }

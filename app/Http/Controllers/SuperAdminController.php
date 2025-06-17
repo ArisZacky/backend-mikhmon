@@ -72,4 +72,60 @@ class SuperAdminController extends Controller
             'data' => $data,
         ]);
     }
+
+    // Get All Router For Admin
+    public function routersGet()
+    {
+        try {
+            $user = Auth::user();
+
+            if ($user->role !== 'admin') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Forbidden: Only admin can access all routers.',
+                ], 403);
+            }
+
+            $routers = Router::all();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $routers,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch routers.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // Get All Voucher Packet for Admin
+    public function paketVouchersGet()
+    {
+        try {
+            $user = Auth::user();
+
+            if ($user->role !== 'admin') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Forbidden: Only admin can access all voucher packets.',
+                ], 403);
+            }
+
+            $pakets = PaketVoucher::all();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $pakets,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch vouchers.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

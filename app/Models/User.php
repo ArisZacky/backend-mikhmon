@@ -10,13 +10,22 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
-    protected $fillable = ['user', 'email', 'password', 'role'];
+    protected $fillable = ['user', 'email', 'password', 'role', 'id_parent'];
 
     protected $hidden = ['password'];
 
-    public function agents()
+    public function parent()
     {
-        return $this->hasMany(Agent::class);
+        return $this->belongsTo(User::class, 'id_parent');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(User::class, 'id_parent');
+    }
+
+    public function routers() {
+        return $this->hasMany(Router::class);
     }
 
     public function getJWTIdentifier()

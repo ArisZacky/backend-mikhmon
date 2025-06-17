@@ -7,6 +7,8 @@ use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\RouterController;
+use App\Http\Controllers\PaketVoucherController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -17,6 +19,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
     Route::get('/userData', [AuthController::class, 'getUserData']);
 
+    Route::post('/createAgent', [AuthController::class, 'addAgent']);
     // API Resource untuk Agent
     Route::apiResource('agents', AgentController::class);
 
@@ -31,6 +34,21 @@ Route::middleware('auth:api')->group(function () {
     
     Route::get('/billing-info', [BillingController::class, 'getBillingInfo']);
 
+    // Router
+    Route::get('/routers', [RouterController::class, 'index']);
+    Route::get('/routers/{id}', [RouterController::class, 'show']);
+    Route::post('/create-routers', [RouterController::class, 'store']);          
+    Route::put('/update-routers/{id}', [RouterController::class, 'update']);
+    Route::delete('/delete-routers/{id}', [RouterController::class, 'destroy']); 
+    
+    // Paketan Voucher
+    Route::prefix('routers/{router}')->group(function () {
+        Route::get('voucher-packets', [PaketVoucherController::class, 'index']);
+        Route::get('voucher-packets/{id}', [PaketVoucherController::class, 'show']);
+        Route::post('create-voucher-packets', [PaketVoucherController::class, 'store']);
+        Route::put('update-voucher-packets/{id}', [PaketVoucherController::class, 'update']);
+        Route::delete('delete-voucher-packets/{id}', [PaketVoucherController::class, 'destroy']);
+    });
 
     // ✅ Superadmin-specific routes
     Route::prefix('superadmin')->group(function () {
