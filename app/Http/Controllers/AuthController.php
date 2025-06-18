@@ -18,13 +18,15 @@ class AuthController extends Controller
         $request->validate([
             'user' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'billing_token' => 'required'
         ]);
 
         $user = User::create([
             'user' => $request->user,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'billing_token' => $request->billing_token
         ]);
 
         return response()->json(['message' => 'Reseller registered successfully!'], 201);
