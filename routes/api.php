@@ -9,6 +9,7 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\RouterController;
 use App\Http\Controllers\PaketVoucherController;
+use App\Http\Controllers\UserListController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -48,6 +49,13 @@ Route::middleware('auth:api')->group(function () {
         Route::post('create-voucher-packets', [PaketVoucherController::class, 'store']);
         Route::put('update-voucher-packets/{id}', [PaketVoucherController::class, 'update']);
         Route::delete('delete-voucher-packets/{id}', [PaketVoucherController::class, 'destroy']);
+
+        // UserList
+        Route::get('user-lists', [UserListController::class, 'index']);
+        Route::get('user-lists/{id}', [UserListController::class, 'show']);
+        Route::post('create-user-lists', [UserListController::class, 'store']);
+        Route::put('update-user-lists/{id}', [UserListController::class, 'update']);
+        Route::delete('delete-user-lists/{id}', [UserListController::class, 'destroy']);
     });
 
     // ✅ Superadmin-specific routes

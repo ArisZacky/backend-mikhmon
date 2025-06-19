@@ -28,6 +28,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Router::class);
     }
 
+    public function paketVouchers() {
+        return $this->hasMany(Router::class);
+    }
+
+    public function userLists() {
+        return $this->hasMany(Router::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

@@ -17,6 +17,7 @@ class PaketVoucher extends Model
         'shared_user',
         'rate_limit',
         'expired_mode',
+        'validity',
         'price',
         'selling_price',
         'lock_user',
