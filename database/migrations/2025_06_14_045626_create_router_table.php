@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('router', function (Blueprint $table) {
             $table->id();
-            $table->string('session_name');
-            $table->string('ip_mikrotik');
-            $table->string('user_mikrotik');
-            $table->string('password_mikrotik');
-            $table->string('hostpot_name');
-            $table->string('dns_name');
-            $table->string('currency');
-            $table->integer('auto_reload');
-            $table->integer('idle_timeout');
-            $table->integer('traffic_interface');
-            $table->string('live_report');
+            $table->string('session_name')->nullable();
+            $table->string('ip_mikrotik')->nullable();
+            $table->string('user_mikrotik')->nullable();
+            $table->string('password_mikrotik')->nullable();
+            $table->string('hostpot_name')->nullable();
+            $table->string('dns_name')->nullable();
+            $table->string('currency')->nullable();
+            $table->integer('auto_reload')->nullable();
+            $table->integer('idle_timeout')->nullable();
+            $table->integer('traffic_interface')->nullable();
+            $table->string('live_report')->nullable();
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->timestamps();
 

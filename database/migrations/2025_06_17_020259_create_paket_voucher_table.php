@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('paket_voucher', function (Blueprint $table) {
             $table->id();
-            $table->string('voucher_name');
+            $table->string('voucher_name')->nullable();
             $table->string('address_pool')->nullable();
-            $table->integer('shared_user');
-            $table->string('rate_limit');
-            $table->string('expired_mode');
-            $table->integer('price');
-            $table->integer('selling_price');
-            $table->string('lock_user');
+            $table->integer('shared_user')->nullable();
+            $table->string('rate_limit')->nullable();
+            $table->string('expired_mode')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('selling_price')->nullable();
+            $table->string('lock_user')->nullable();
             $table->string('parent_queue')->nullable();
-            $table->unsignedBigInteger('router_id'); 
-            $table->unsignedBigInteger('user_id'); 
+            $table->unsignedBigInteger('router_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('router_id')
