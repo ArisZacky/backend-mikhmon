@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('profile')->nullable(); // Nama Paket Voucher
             
             // $table->string('mac')->nullable();
-            // $table->string('uptime')->nullable();
+            $table->string('uptime')->nullable();
             // $table->string('bytes_in')->nullable();
             // $table->string('bytes_out')->nullable();
             // $table->string('time_left')->nullable();

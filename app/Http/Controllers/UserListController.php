@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserList;
 use App\Models\Router;
 use App\Models\PaketVoucher;
+use App\Services\MikrotikService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -210,4 +211,41 @@ class UserListController extends Controller
             ], 500);
         }
     }
+
+    // Sync User List (Voucher) from Mikrotik Router
+    public function sync($router_id)
+    {
+        try{
+            $user = Auth::user();
+            $router = Router::where('id', $router_id)->where('user_id', $user->id)->first();
+
+            if (!$router) {
+                return response()->json([
+                    'status' => 'error', 
+                    'message' => 'Router not found or unauthorized.'
+                ], 404);
+            }
+
+            // Initiate Mikrotik Service
+            $service = new MikrotikService(
+                $router->ip_mikrotik,
+                $router->user_mikrotik,
+                $router->password_mikrotik,
+                8728
+            );
+
+            $userList = $service->syncUserList($router, $user->id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => "Synced {$userList} user list.",
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to sync user list.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }   
 }

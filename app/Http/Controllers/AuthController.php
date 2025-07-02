@@ -15,22 +15,40 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'user' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'billing_token' => 'required'
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'user' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6',
+                'billing_token' => 'required'
+            ]);
 
-        $user = User::create([
-            'user' => $request->user,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'billing_token' => $request->billing_token
-        ]);
+            $user = User::create([
+                'user' => $validatedData['user'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'billing_token' => $validatedData['billing_token']
+            ]);
 
-        return response()->json(['message' => 'Reseller registered successfully!'], 201);
+            return response()->json([
+                'message' => 'Reseller registered successfully!',
+                'data' => $user
+            ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Registration failed.',
+                'error' => $e->getMessage() // Untuk produksi, sebaiknya sembunyikan pesan asli
+            ], 500);
+        }
     }
+
 
     public function login(Request $request)
     {

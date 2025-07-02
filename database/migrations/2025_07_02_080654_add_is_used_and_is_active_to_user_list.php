@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('paket_voucher', function (Blueprint $table) {
-            $table->string('validity')->after('expired_mode')->nullable();
+        Schema::table('user_list', function (Blueprint $table) {
+            $table->boolean('is_used')->after('uptime')->default(false);
+            $table->boolean('is_active')->after('is_used')->default(false);
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('paket_voucher', function (Blueprint $table) {
+        Schema::table('user_list', function (Blueprint $table) {
             //
         });
     }

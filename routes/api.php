@@ -56,6 +56,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('create-user-lists', [UserListController::class, 'store']);
         Route::put('update-user-lists/{id}', [UserListController::class, 'update']);
         Route::delete('delete-user-lists/{id}', [UserListController::class, 'destroy']);
+        Route::post('sync-user-lists', [UserListController::class, 'sync']);
     });
 
     // ✅ Superadmin-specific routes
