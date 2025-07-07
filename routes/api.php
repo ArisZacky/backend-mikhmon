@@ -10,10 +10,17 @@ use App\Http\Controllers\BillingController;
 use App\Http\Controllers\RouterController;
 use App\Http\Controllers\PaketVoucherController;
 use App\Http\Controllers\UserListController;
+use App\Http\Controllers\BillingReportController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::prefix('billing')->group(function () {
+    Route::post('/generate-user-report', [BillingReportController::class, 'generateAndSendReport']);
+    
+    Route::post('/generate-all-reports', [BillingReportController::class, 'generateAndSendAllReports']);
+});
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -41,6 +48,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/create-routers', [RouterController::class, 'store']);          
     Route::put('/update-routers/{id}', [RouterController::class, 'update']);
     Route::delete('/delete-routers/{id}', [RouterController::class, 'destroy']); 
+    
+    Route::post('/v1/sync-vouchers', [VoucherController::class, 'syncAll']);
     
     // Paketan Voucher
     Route::prefix('routers/{router}')->group(function () {

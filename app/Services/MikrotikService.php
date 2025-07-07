@@ -44,11 +44,10 @@ class MikrotikService
         return $this->client->query($query)->read();
     }
     
-    // Syncronize Voucher yang diGenerate
+    // Syncronize Voucher yang diGenerate di masing-masing Router
     public function syncUserList(Router $router, int $userId): int
     {
         $users = $this->getHotspotUsers();
-        $activeUsers = $this->getHotspotActive();
 
         $activeUsernames = $this->getActiveUsernames();
 
@@ -82,7 +81,7 @@ class MikrotikService
                     'paket_voucher_id' => $paket?->id,
                 ],
                 [
-                    'password' => $user['password'] ?? null,
+                    'user_password' => $user['password'] ?? null,
                     'profile' => $profileName,
                     'comment' => $user['comment'] ?? null,
                     'uptime' => $uptime,
@@ -95,6 +94,18 @@ class MikrotikService
             $synced++;
         }
         return $synced;
+    }
+
+    public function syncAllRoutersUserList()
+    {
+        $routers = Router::all();
+        $syncedCount = 0;
+
+        foreach ($routers as $router) {
+            $syncedCount += $this->syncUserList($router, auth()->id());
+        }
+
+        return $syncedCount;
     }
 
     public function getActiveUsernames(): array

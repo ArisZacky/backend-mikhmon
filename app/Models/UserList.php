@@ -14,6 +14,7 @@ class UserList extends Model
         'user_password',
         'profile',
         'uptime',
+        'used_at',
         'is_used',
         'is_active',
         'time_limit',
