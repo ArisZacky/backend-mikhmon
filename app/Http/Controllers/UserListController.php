@@ -248,4 +248,56 @@ class UserListController extends Controller
             ], 500);
         }
     }   
+
+    public function syncAll()
+    {
+        try {
+            $routers = Router::all();
+            $totalSynced = 0;
+
+            foreach ($routers as $router) {
+                try{
+                    // Initiate Mikrotik Service
+                    $service = new MikrotikService(
+                        $router->ip_mikrotik,
+                        $router->user_mikrotik,
+                        $router->password_mikrotik,
+                        8728
+                    );
+                    
+                    $count = $service->syncUserList($router, $router->user_id);
+
+                    $result[] = [
+                        'router_id' => $router->id,
+                        'ip' => $router->ip_mikrotik,
+                        'status' => 'success',
+                        'synced_count' => $count
+                    ];
+
+                    $totalSynced += $count;
+
+                } catch (\Exception $e) {
+                    // Catat router yang gagal konek
+                    $result[] = [
+                        'router_id' => $router->id,
+                        'ip' => $router->ip_mikrotik,
+                        'status' => 'failed',
+                        'error' => $e->getMessage()
+                    ];
+                    continue;
+                }
+            }
+
+            return response()->json([
+                'status' => 'completed',
+                'total_synced' => $totalSynced,
+                'routers' => $result
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Global sync failed: '.$e->getMessage()
+            ], 500);
+        }
+    }
 }
