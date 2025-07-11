@@ -59,6 +59,8 @@ class MikrotikService
 
         $activeUsernames = $this->getActiveUsernames();
 
+        $mikrotikUsernames = collect($users)->pluck('name')->filter()->toArray();
+
         $synced = 0;
 
         foreach ($users as $user) {
@@ -111,11 +113,24 @@ class MikrotikService
                     'is_used' => $isUsed,
                     'is_active' => $isActive,
                     'user_id' => $userId,
+                    'is_expired' => false,
                 ]
             );
 
             $synced++;
         }
+
+        // 🔍 Cek username di DB yang tidak ada di Mikrotik
+        $existingUserLists = UserList::whereHas('paketVouchers', function ($query) use ($router) {
+            $query->where('router_id', $router->id);
+        })->get();
+
+        foreach ($existingUserLists as $userList) {
+            if (!in_array($userList->user, $mikrotikUsernames)) {
+                $userList->update(['is_expired' => true]);
+            }
+        }
+
         return $synced;
     }
 

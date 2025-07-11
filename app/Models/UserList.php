@@ -17,6 +17,7 @@ class UserList extends Model
         'used_at',
         'is_used',
         'is_active',
+        'is_expired',
         'time_limit',
         'data_limit',
         'comment',
