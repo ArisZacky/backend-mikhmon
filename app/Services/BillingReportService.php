@@ -153,7 +153,7 @@ class BillingReportService
             'keterangan' => $report->keterangan,
             'qty' => $report->qty,
             'bill_amount' => $report->bill_amount,
-            'timestamp' => now()->toDateTimeString()
+            'timestamp' => $report->created_at->toDateTimeString()
         ];
 
         try {
@@ -186,8 +186,51 @@ class BillingReportService
             Log::error('Failed to send billing report: ' . $e->getMessage());
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'response' => null
             ];
+        }
+    }
+
+    public function resendFailedBillingReports(): array
+    {
+        $failedReports = $this->filterBillingReportsByIsSent(false);
+        $results = [];
+
+        foreach ($failedReports as $report) {
+            $result = $this->sendBillingToExternalApi($report);
+
+            $results[] = [
+                'report_id' => $report->id,
+                'user_id' => $report->user_id,
+                'success' => $result['success'] ?? false,
+                'message' => $result['success'] ? 'Resent successfully' : ($result['error'] ?? 'Unknown error')
+            ];
+        }
+
+        return $results;
+    }
+
+
+    private function getAllBillingReports()
+    {
+        try{
+            $reports = BillingReport::all();
+            return $reports;
+        } catch (\Exception $e) {
+            \Log::error('Error fetching all billing reports: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    private function filterBillingReportsByIsSent(bool $isSent)
+    {
+        try {
+            $reports = BillingReport::where('is_sent', $isSent)->get();
+            return $reports;
+        } catch (\Exception $e) {
+            \Log::error('Error filtering billing reports: ' . $e->getMessage());
+            return [];
         }
     }
 }

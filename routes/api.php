@@ -22,6 +22,8 @@ Route::prefix('billing')->group(function () {
     Route::post('/generate-user-report', [BillingReportController::class, 'generateAndSendReport']);
     
     Route::post('/generate-all-reports', [BillingReportController::class, 'generateAndSendAllReports']);
+
+    Route::post('/resend-reports', [BillingReportController::class, 'resendFailedReports']);
 });
 
 Route::middleware('auth:api')->group(function () {

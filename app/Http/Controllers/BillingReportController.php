@@ -77,4 +77,23 @@ class BillingReportController extends Controller
             ], 500);
         }
     }
+    
+    public function resendFailedReports()
+    {
+        try{
+            $results = $this->service->resendFailedBillingReports();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All failed billing reports resent successfully',
+                'reports' => $results
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to resend billing reports',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
